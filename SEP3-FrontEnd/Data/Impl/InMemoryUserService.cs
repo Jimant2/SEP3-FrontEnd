@@ -16,8 +16,8 @@ namespace SEP3_FrontEnd.Data.Impl
             {
                 new User
                 {
-                    username = "Bill",
-                    password = "12345",
+                    UserName = "Bill",
+                    Password = "12345",
                     Role = "User",
                     SecurityLevel = 2
                 }
@@ -26,15 +26,15 @@ namespace SEP3_FrontEnd.Data.Impl
 
         }
 
-        public User ValidateUser(string userName, string Password)
+        public User ValidateUser(string userName, string password)
         {
-            User first = users.FirstOrDefault(user => user.username.Equals(userName));
+            User first = users.FirstOrDefault(user => user.UserName.Equals(userName));
                 if (first == null)
             {
                 throw new Exception("User not found");
             }
 
-            if (!first.Equals(Password))
+            if (!first.Equals(password))
             {
                 throw new Exception("Incorrect password");
             }

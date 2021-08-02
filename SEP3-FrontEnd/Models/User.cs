@@ -9,8 +9,9 @@ namespace SEP3_FrontEnd.Models
     public class User
     {
 
-        public string username { get; set; }
-        public string password { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string email { get; set; }
         public string Role { get; set; }
         public int SecurityLevel { get; set; }
 

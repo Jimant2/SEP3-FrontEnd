@@ -40,8 +40,8 @@ namespace SEP3_FrontEnd
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("SecurityLevel2", policy =>
-               policy.RequireAuthenticatedUser().RequireAssertion(context =>
+                options.AddPolicy("SecurityLevel2", a =>
+               a.RequireAuthenticatedUser().RequireAssertion(context =>
                {
                    Claim levelClaim = context.User.FindFirst(claim => claim.Type.Equals("Level"));
                    if (levelClaim == null) return false;

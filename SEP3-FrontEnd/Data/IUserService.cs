@@ -8,6 +8,6 @@ namespace SEP3_FrontEnd.Data
 {
    public interface IUserService
     {
-        User ValidateUser(string userName, string Password);
+        User ValidateUser(string userName, string password);
     }
 }
