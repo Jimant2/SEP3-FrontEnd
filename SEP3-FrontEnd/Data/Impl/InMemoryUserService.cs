@@ -34,7 +34,7 @@ namespace SEP3_FrontEnd.Data.Impl
                 throw new Exception("User not found");
             }
 
-            if (!first.Equals(password))
+            if (!first.Password.Equals(password))
             {
                 throw new Exception("Incorrect password");
             }
