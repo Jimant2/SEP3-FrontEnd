@@ -8,6 +8,9 @@ namespace SEP3_FrontEnd.Data
 {
    public interface IUserService
     {
-        User ValidateUser(string userName, string password);
+        Task<User> ValidateUser(string userName, string password);
+        Task RegisterUser(User user);
+        Task UpdateUser(User user, string password);
+        
     }
 }

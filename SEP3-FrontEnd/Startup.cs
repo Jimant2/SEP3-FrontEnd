@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -33,10 +34,10 @@ namespace SEP3_FrontEnd
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<User>();
-            services.AddScoped<IUserService, InMemoryUserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            services.AddSingleton<IChatService, ChatService>();
 
             services.AddAuthorization(options =>
             {

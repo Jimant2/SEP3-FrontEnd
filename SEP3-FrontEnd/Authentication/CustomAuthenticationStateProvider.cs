@@ -44,7 +44,10 @@ namespace SEP3_FrontEnd.Authentication
             ClaimsPrincipal cachedClaimsPrincipal = new ClaimsPrincipal(identity);
             return await Task.FromResult(new AuthenticationState(cachedClaimsPrincipal));
         }
-
+        public async Task<User> GetUser()
+        {
+            return cachedUser;
+        }
         public void ValidateLogin(string username, string password)
         {
             Console.WriteLine("Validating log in");
@@ -52,21 +55,20 @@ namespace SEP3_FrontEnd.Authentication
             if (string.IsNullOrEmpty(password)) throw new Exception("Enter password");
 
             ClaimsIdentity identity = new ClaimsIdentity();
+
             try
             {
-                User user = userService.ValidateUser(username, password);
+                User user = Task.Run(() => userService.ValidateUser(username, password)).Result;
                 identity = SetupClaimsForUser(user);
-                string serialisedData = JsonSerializer.Serialize(user);
-                jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
+                string serializedUser = JsonSerializer.Serialize(user);
+                jsRuntime.InvokeVoidAsync("localStorage.setItem", "currentUser", serializedUser);
                 cachedUser = user;
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine(e.Message);
             }
-
-            NotifyAuthenticationStateChanged(
-                Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity))));
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity))));
         }
 
         public void Logout()

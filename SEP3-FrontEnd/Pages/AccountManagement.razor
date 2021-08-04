@@ -1,11 +1,11 @@
 ﻿@page "/accountmanagement"
 @using SEP3_FrontEnd.Models
+@attribute [Authorize(Policy ="SecurityLevel2")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView>
 
     <h3>Hello @context.User.Identity.Name</h3>
-
     <div class="row">
         <div class="col-md-4">
             <form>
@@ -30,7 +30,6 @@
         </div>
         </div>
 </AuthorizeView>
-<p>This page is only visible to users of the system</p>
 
 @code {
     private string username { get; set; }
@@ -48,6 +47,8 @@
         };
 
         Console.WriteLine("Account updated");
+
+        result = "Account updated";
     }
 }
 
