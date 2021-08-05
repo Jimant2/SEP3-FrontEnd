@@ -1,5 +1,5 @@
 ﻿@page "/Chat"
-@attribute [Authorize(Policy = "SecurityLevel2")]
+
 @using SEP3_FrontEnd.Models
 @using SEP3_FrontEnd.Authentication
 @using SEP3_FrontEnd.Data
@@ -29,43 +29,28 @@
         </ul>
     </div>
     <div class="commonControls">
-        @if (displayConnect)
-        {
+       
             <button type="button" class="btn btn-primary" @onclick="async () => await ConnectToChat()">Connect</button>
-        }
-        @if (displayReconnect)
-        {
-            <button type="button" class="btn btn-primary" @onclick="async () => await ReconnectToChat()">Reconnect to chat</button>
-        }
+        
     </div>
-    <div class="closeChat">
-        @if (displayCloseRoom)
-        {
-            <button type="button" class="btn btn-primary" @onclick="async () => await CloseChatRoom()">
-                Delete chat
-            </button>
-        }
-    </div>
+
     <div class="inputField">
-        @if (displayInputField)
-        {
+      
             <textarea class="textarea is-primary" aria-label="Message" @bind="message"></textarea>
-        }
+        
     </div>
     <div class="sendMessage">
-        @if (displaySendMessage)
-        {
-            <button type="button" class="btn btn-primary" @onclick="async () => await SendMessage()">
+       
+            <button type="button" class="btn btn-primary" @onclick="async () => await SendMessage()"> Send
             </button>
-        }
+        
     </div>
     <div class="disconnect">
-        @if (displayDisconnect)
-        {
+       
             <button type="button" class="btn btn-primary" @onclick="async () => await Disconnect()">
                 Disconnect
             </button>
-        }
+        
     </div>
 </div>
 @code {
@@ -94,11 +79,6 @@
     public async Task ClearChat()
     {
         await JSRuntime.InvokeVoidAsync("ClearChatJS");
-    }
-    public async Task ReconnectToChat()
-    {
-        await JSRuntime.InvokeVoidAsync("ReconnectToChatJS", chatUser.Id);
-        await FetchRoom();
     }
 
 
@@ -144,7 +124,7 @@
 
 
 
-    // called on dissconnect press
+    // called on dissconnect click
     private async Task Disconnect()
     {
         await JSRuntime.InvokeVoidAsync("DisconnectJS", chatUser.Id);
