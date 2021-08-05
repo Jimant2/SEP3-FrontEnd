@@ -5,4 +5,8 @@
     <RootNamespace>SEP3_FrontEnd</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Blazored.Typeahead" Version="4.6.0" />
+  </ItemGroup>
+
 </Project>

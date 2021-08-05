@@ -44,7 +44,7 @@ namespace SEP3_FrontEnd.Data.Impl
 
         public async Task<User> SearchUser(string userName, string searchText)
         {
-            HttpResponseMessage response = await client.GetAsync(uri + $"?username={userName}");
+            HttpResponseMessage response = await client.GetAsync(uri + $"username={userName}");
 
             searchText = await response.Content.ReadAsStringAsync();
             User user = JsonSerializer.Deserialize<User>(searchText, new JsonSerializerOptions
@@ -61,7 +61,7 @@ namespace SEP3_FrontEnd.Data.Impl
             HttpContent content = new StringContent(userAsJson,
                 Encoding.UTF8,
                 "application/json");
-            HttpResponseMessage response = await client.PutAsync(uri + "?password=" + password, content);
+            HttpResponseMessage response = await client.PutAsync(uri + "password=" + password, content);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Error: {response.StatusCode}, {response.ReasonPhrase}");
@@ -72,7 +72,7 @@ namespace SEP3_FrontEnd.Data.Impl
 
         public async Task<User> ValidateUser(string userName, string password)
         {
-            HttpResponseMessage response = await client.GetAsync(uri + $"?username={userName}&password={@password}");
+            HttpResponseMessage response = await client.GetAsync(uri + $"username={userName}&password={@password}");
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($@"Error: {response.ReasonPhrase}");

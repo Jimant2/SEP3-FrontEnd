@@ -11,65 +11,94 @@ namespace SEP3_FrontEndWEBAPI.Data.Impl
 {
     public class UserService : IUserService
     {
-        private const string uri = "http://localhost:5000/user";
-        private readonly HttpClient client;
-
-        JsonSerializerOptions serializeOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
+        private string uri = "http://localhost:8080";
+        private HttpClient client;
 
         public UserService()
         {
             HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
-            {
-                return true;
-            };
             client = new HttpClient(clientHandler);
         }
 
 
-        public async Task RegisterUser(User user)
+       
+    
+
+
+        public async Task<User> UpdateUser(User user, string password)
         {
-            var userAsJson = JsonSerializer.Serialize(user, serializeOptions);
-            HttpContent content = new StringContent(userAsJson,
+            User valid = await ValidateUser(user.UserName, password);
+            if (valid == null)
+            {
+                throw new Exception($@"Error: Password or username incorrect");
+            }
+
+            string UserAsJson = JsonSerializer.Serialize(user);
+            Console.WriteLine(UserAsJson);
+            HttpContent content = new StringContent(
+                UserAsJson,
                 Encoding.UTF8,
                 "application/json");
-            await client.PostAsync(uri, content);
-        }
-
-
-        public async Task UpdateUser(User user, string password)
-        {
-            var userAsJson = JsonSerializer.Serialize(user, serializeOptions);
-            HttpContent content = new StringContent(userAsJson,
-                Encoding.UTF8,
-                "application/json");
-            HttpResponseMessage response = await client.PutAsync(uri + "?password=" + password, content);
+            HttpResponseMessage response =
+                await client.PutAsync(uri + $"/UpdateUser", content);
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Error: {response.StatusCode}, {response.ReasonPhrase}");
+                throw new Exception($@"Error");
             }
-        }
 
-      
-
-        public async Task<User> ValidateUser(string userName, string password)
-        {
-            HttpResponseMessage response = await client.GetAsync(uri + $"?username={userName}&password={@password}");
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($@"Error: {response.ReasonPhrase}");
-            }
             string result = await response.Content.ReadAsStringAsync();
-            User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+            User updateUser = JsonSerializer.Deserialize<User>(result,
+                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return updateUser;
+        }
+
+        public async Task<User> SearchUser(string userName, string searchText)
+        {
+            HttpResponseMessage response = await client.GetAsync(uri + $"username={userName}");
+
+            searchText = await response.Content.ReadAsStringAsync();
+            User user = JsonSerializer.Deserialize<User>(searchText, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 PropertyNameCaseInsensitive = true
             });
             return user;
+        }
+
+        public async Task<User> ValidateUser(string userName, string password)
+        {
+            HttpResponseMessage response =
+                await client.GetAsync(uri + "/ValidateUser" + $"Username={userName}&Password={@password}");
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($@"Error");
+            }
+            string result = await response.Content.ReadAsStringAsync();
+            User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return user;
+        }
+
+        public async Task<User> RegisterUser(User user)
+        {
+            user.SecurityLevel = 2;
+            string UserAsJson = JsonSerializer.Serialize(user);
+            Console.WriteLine(UserAsJson);
+            HttpContent content = new StringContent(
+                UserAsJson,
+                Encoding.UTF8,
+                "application/json");
+            HttpResponseMessage response = await client.PostAsync(uri + "/RegisterUser", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($@"Error");
+            }
+            string result = await response.Content.ReadAsStringAsync();
+            User userReceived = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy
+                = JsonNamingPolicy.CamelCase
+            });
+            return userReceived;
         }
     }
 }

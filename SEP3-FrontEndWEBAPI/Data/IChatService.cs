@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SEP3_FrontEndWEBAPI.Models
+namespace SEP3_FrontEndWEAPI.Models
 {
    public interface IChatService
     {

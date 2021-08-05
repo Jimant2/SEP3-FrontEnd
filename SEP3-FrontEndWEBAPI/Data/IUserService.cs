@@ -9,8 +9,8 @@ namespace SEP3_FrontEndWEBAPI.Data
    public interface IUserService
     {
         Task<User> ValidateUser(string userName, string password);
-        Task RegisterUser(User user);
-        Task UpdateUser(User user, string password);
-        
+        Task<User> RegisterUser(User user);
+        Task<User> UpdateUser(User user, string password);
+        Task<User> SearchUser(string userName, string searchText);
     }
 }
