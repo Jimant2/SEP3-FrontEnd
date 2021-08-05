@@ -1,4 +1,4 @@
-﻿using SEP3_FrontEnd.Models;
+﻿using SEP3_FrontEndWEBAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SEP3_FrontEnd.Data.Impl
+namespace SEP3_FrontEndWEBAPI.Data.Impl
 {
     public class UserService : IUserService
     {
@@ -40,20 +40,6 @@ namespace SEP3_FrontEnd.Data.Impl
             await client.PostAsync(uri, content);
         }
 
-      
-
-        public async Task<User> SearchUser(string userName, string searchText)
-        {
-            HttpResponseMessage response = await client.GetAsync(uri + $"?username={userName}");
-
-            searchText = await response.Content.ReadAsStringAsync();
-            User user = JsonSerializer.Deserialize<User>(searchText, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                PropertyNameCaseInsensitive = true
-            });
-            return user;
-        }
 
         public async Task UpdateUser(User user, string password)
         {
