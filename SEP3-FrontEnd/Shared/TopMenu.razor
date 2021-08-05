@@ -1,0 +1,27 @@
+﻿@using SEP3_FrontEnd.Models
+@using SEP3_FrontEnd.Data
+@inject IUserService IuserService;
+@inject IChatService IChatService;
+@inject User user;  
+
+<BlazoredTypeahead SearchMethod="@SearchUsers" @bind-Value="selectedUser">
+    <SelectedTemplate>
+        @context.Equals(user.UserName)
+    </SelectedTemplate>
+    <ResultTemplate>
+        @context.Equals(user.UserName)
+    </ResultTemplate>
+    <NotFoundTemplate>
+        Sorry, there weren't any users with that name
+    </NotFoundTemplate>
+</BlazoredTypeahead>
+
+@code {
+    private User selectedUser;
+
+    private async Task<User> SearchUsers(string userName, string searchText)
+    {
+        var response = await IuserService.SearchUser(userName, searchText);
+        return response;
+    }
+}
