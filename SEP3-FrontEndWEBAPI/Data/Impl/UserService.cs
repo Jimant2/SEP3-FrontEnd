@@ -52,9 +52,9 @@ namespace SEP3_FrontEndWEBAPI.Data.Impl
             return updateUser;
         }
 
-        public async Task<User> SearchUser(string userName, string searchText)
+        public async Task<User> SearchUser(string searchText)
         {
-            HttpResponseMessage response = await client.GetAsync(uri + $"username={userName}");
+            HttpResponseMessage response = await client.GetAsync(uri + $"searchText{searchText}");
 
             searchText = await response.Content.ReadAsStringAsync();
             User user = JsonSerializer.Deserialize<User>(searchText, new JsonSerializerOptions

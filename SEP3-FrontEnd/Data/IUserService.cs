@@ -11,6 +11,6 @@ namespace SEP3_FrontEnd.Data
         Task<User> ValidateUser(string userName, string password);
         Task RegisterUser(User user);
         Task UpdateUser(User user, string password);
-        Task<User> SearchUser(string userName, string searchText);
+        Task<User> SearchUser(string searchText);
     }
 }

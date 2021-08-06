@@ -11,6 +11,6 @@ namespace SEP3_FrontEndWEBAPI.Data
         Task<User> ValidateUser(string userName, string password);
         Task<User> RegisterUser(User user);
         Task<User> UpdateUser(User user, string password);
-        Task<User> SearchUser(string userName, string searchText);
+        Task<User> SearchUser(string searchText);
     }
 }
