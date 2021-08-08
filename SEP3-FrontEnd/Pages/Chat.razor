@@ -20,7 +20,7 @@
         <ul class="list-group" id="messagesList">
             @if (messages != null)
             {
-                <h3>Messages:</h3>
+                <li>Messages:</li>
                 foreach (var item in messages)
                 {
                     <li class="list-group-item">@item.sender said @item.body</li>
