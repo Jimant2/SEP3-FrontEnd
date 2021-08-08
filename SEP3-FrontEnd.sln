@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SEP3-FrontEnd", "SEP3-FrontEnd\SEP3-FrontEnd.csproj", "{064D0BCE-928E-4A18-AE88-9D841A8870EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SEP3-FrontEndWEBAPI", "SEP3-FrontEndWEBAPI\SEP3-FrontEndWEBAPI.csproj", "{33479934-38F8-4BEA-B81D-47619853241A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{064D0BCE-928E-4A18-AE88-9D841A8870EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{064D0BCE-928E-4A18-AE88-9D841A8870EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{064D0BCE-928E-4A18-AE88-9D841A8870EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33479934-38F8-4BEA-B81D-47619853241A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33479934-38F8-4BEA-B81D-47619853241A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33479934-38F8-4BEA-B81D-47619853241A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33479934-38F8-4BEA-B81D-47619853241A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
