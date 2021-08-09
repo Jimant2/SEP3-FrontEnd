@@ -56,6 +56,8 @@
             HttpResponseMessage response = await client.PostAsync("http://localhost:8080/sep3/login/user", content);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
+
+
             Console.WriteLine(responseBody);
         }
         catch (HttpRequestException e)

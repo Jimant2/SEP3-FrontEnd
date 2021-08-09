@@ -2,16 +2,13 @@
 
 @using SEP3_FrontEnd.Models
 @using SEP3_FrontEnd.Authentication
-@using SEP3_FrontEnd.Data
 @using System.Text.Json
 
 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
-@inject IUserService UserService
 @inject IJSRuntime JSRuntime
-@inject IChatService ChatService;
 
 <h3>Chat</h3>
 <div class="chatPage">
@@ -30,7 +27,7 @@
     </div>
     <div class="commonControls">
        
-            <button type="button" class="btn btn-primary" @onclick="async () => await ConnectToChat()">Connect</button>
+            <button type="button" class="btn btn-primary""">Connect</button>
         
     </div>
 
@@ -47,7 +44,7 @@
     </div>
     <div class="disconnect">
        
-            <button type="button" class="btn btn-primary" @onclick="async () => await Disconnect()">
+            <button type="button" class="btn btn-primary" ="">
                 Disconnect
             </button>
         
@@ -80,7 +77,6 @@
     {
         await ClearChat();
         await JSRuntime.InvokeVoidAsync("ConnectToRoomJS", roomId);
-        await FetchRoom();
       
     }
 
@@ -99,11 +95,7 @@
 
 
     
-    private async Task ConnectToChat()
-    {
-        await JSRuntime.InvokeVoidAsync("GoOnlineJS", chatUser.Id, chatUser.SecurityLevel == 2);
-
-    }
+  
 
    
     private async Task SendMessage()
@@ -116,28 +108,5 @@
 
 
 
-    private async Task Disconnect()
-    {
-        await JSRuntime.InvokeVoidAsync("DisconnectJS", chatUser.Id);
-        await ClearChat();
-
-    }
-
-
-    public async Task FetchRoom()
-    {
-        await Task.Delay(100);
-        chatUser = await ChatService.GetUserById(chatUser.Id);
-        if (chatUser != null)
-        {
-            currentRoom = await ChatService.GetRoom(chatUser.CurrentRoom);
-            if (currentRoom != null)
-            {
-                messages = JsonSerializer.Deserialize<IList<Message>>(JsonSerializer.Serialize(currentRoom.Messages));
-            }
-        }
-        StateHasChanged();
-
-    }
 
 }

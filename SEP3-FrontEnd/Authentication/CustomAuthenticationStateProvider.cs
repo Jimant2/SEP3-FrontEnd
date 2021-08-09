@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using SEP3_FrontEnd.Data;
 using SEP3_FrontEnd.Models;
 using System;
 using System.Collections.Generic;
@@ -14,14 +13,12 @@ namespace SEP3_FrontEnd.Authentication
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly IJSRuntime jsRuntime;
-        private readonly IUserService userService;
 
         private User cachedUser;
 
-        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, IUserService userService)
+        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime)
         {
             this.jsRuntime = jsRuntime;
-            this.userService = userService;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -33,7 +30,6 @@ namespace SEP3_FrontEnd.Authentication
                 if (!string.IsNullOrEmpty(userAsJson))
                 {
                     User tmp = JsonSerializer.Deserialize<User>(userAsJson);
-                    ValidateLogin(tmp.UserName, tmp.Password);
                 }
             }
             else
@@ -47,28 +43,6 @@ namespace SEP3_FrontEnd.Authentication
         public async Task<User> GetUser()
         {           
             return cachedUser;
-        }
-        public void ValidateLogin(string username, string password)
-        {
-            Console.WriteLine("Validating log in");
-            if (string.IsNullOrEmpty(username)) throw new Exception("Enter username");
-            if (string.IsNullOrEmpty(password)) throw new Exception("Enter password");
-
-            ClaimsIdentity identity = new ClaimsIdentity();
-
-            try
-            {
-                User user = Task.Run(() => userService.ValidateUser(username, password)).Result;
-                identity = SetupClaimsForUser(user);
-                string serializedUser = JsonSerializer.Serialize(user);
-                jsRuntime.InvokeVoidAsync("localStorage.setItem", "currentUser", serializedUser);
-                cachedUser = user;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity))));
         }
 
         public void Logout()

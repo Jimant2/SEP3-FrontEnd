@@ -8,8 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SEP3_FrontEnd.Authentication;
-using SEP3_FrontEnd.Data;
-using SEP3_FrontEnd.Data.Impl;
 using SEP3_FrontEnd.Models;
 using System;
 using System.Collections.Generic;
@@ -35,9 +33,7 @@ namespace SEP3_FrontEnd
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<User>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-            services.AddSingleton<IChatService, ChatService>();
             services.AddHttpClient();
 
             services.AddAuthorization(options =>

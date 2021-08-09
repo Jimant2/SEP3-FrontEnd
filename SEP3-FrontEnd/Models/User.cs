@@ -23,7 +23,6 @@ namespace SEP3_FrontEnd.Models
         {
         }
 
-        public string CurrentRoom { get; set; }
 
         public int Id;
         public string UserName { get; set; }
@@ -32,7 +31,10 @@ namespace SEP3_FrontEnd.Models
         public string Role { get; set; }
         public int SecurityLevel { get; set; }
 
+        public override string ToString()
+        {
+            return base.ToString() + ":" + UserName.ToString() + ":" + Password.ToString() + ":" + email.ToString() + ":" + Role.ToString() + ":" + SecurityLevel.ToString();
+        }
 
-     
     }
 }

@@ -1,6 +1,8 @@
 ﻿@page "/AccountCreation" 
 @using SEP3_FrontEnd.Models
-
+@using Newtonsoft.Json;
+@using System.Text;
+@using System.Net.Http; 
 
 
 <h3>Create a new account</h3>
@@ -30,12 +32,12 @@
 </div>
 
 @code {
-    private static string username { get; set; }
-    private static string password { get; set; }
-    private static string email { get; set; }
-    private static string result { get; set; }
+    private  string username { get; set; }
+    private  string password { get; set; }
+    private  string email { get; set; }
+    private  string result { get; set; }
 
-    static async Task OnSave()
+    public async Task OnSave()
     {
         HttpClient client = new HttpClient();
         try
@@ -46,19 +48,14 @@
                     { "password", password},
                     { "email", email }
            };
-            var content = new FormUrlEncodedContent(value);
 
+            var json = JsonConvert.SerializeObject(value);
 
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
 
+            var url = "http://localhost:8080/sep3/postUser";
 
-            HttpResponseMessage response = await client.PostAsync("http://localhost:8080/sep3/postUser", content);
-
-            response.Content()
-
-            response.EnsureSuccessStatusCode();
-
-
-
+            HttpResponseMessage response = await client.PostAsync(url, data);
 
             string responseBody = await response.Content.ReadAsStringAsync();
 
