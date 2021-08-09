@@ -10,13 +10,18 @@
         <form>
             <div class="form-group">
                 <label class="control-label">Username</label>
-                <br/>
+                <br />
                 <input placeholder="Username" @bind="username" />
             </div>
             <div class="form-group">
                 <label class="control-label">Password</label>
-                <br/>
+                <br />
                 <input type="password" placeholder="Password" @bind="password" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Email</label>
+                <br />
+                <input placeholder="Email" @bind="email" />
             </div>
         </form>
         <button class="btn btn-primary" @onclick="OnSave">Create Account</button>
@@ -25,22 +30,55 @@
 </div>
 
 @code {
-    private string username { get; set; }
-    private string password { get; set; }
-    private string result { get; set; }
+    private static string username { get; set; }
+    private static string password { get; set; }
+    private static string email { get; set; }
+    private static string result { get; set; }
 
-    private async Task OnSave()
+    static async Task OnSave()
     {
-        User user = new User()
+        HttpClient client = new HttpClient();
+        try
         {
-            UserName = username,
-            Password = password
-        };
+            var value = new Dictionary<string, string>
+           {
+                    { "username", username},
+                    { "password", password},
+                    { "email", email }
+           };
+            var content = new FormUrlEncodedContent(value);
 
-        Console.WriteLine("Account created");
 
-        username = "";
-        password = "";
-        result = "Account created";
+
+
+            HttpResponseMessage response = await client.PostAsync("http://localhost:8080/sep3/postUser", content);
+
+            response.Content()
+
+            response.EnsureSuccessStatusCode();
+
+
+
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                result = "Account created";
+            }
+
+            else
+            {
+                result = "Something went wrong, try again";
+            }
+
+            Console.WriteLine(responseBody);
+
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
+        }
     }
 }
