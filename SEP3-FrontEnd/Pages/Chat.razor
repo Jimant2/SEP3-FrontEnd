@@ -99,14 +99,14 @@
     }
 
 
-    // called when user presses on connect
+    
     private async Task ConnectToChat()
     {
         await JSRuntime.InvokeVoidAsync("GoOnlineJS", chatUser.Id, chatUser.SecurityLevel == 2);
 
     }
 
-    // called when user press on send message
+   
     private async Task SendMessage()
     {
 
@@ -117,7 +117,6 @@
 
 
 
-    // called on dissconnect click
     private async Task Disconnect()
     {
         await JSRuntime.InvokeVoidAsync("DisconnectJS", chatUser.Id);

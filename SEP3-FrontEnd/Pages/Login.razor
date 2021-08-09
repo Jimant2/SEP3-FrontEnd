@@ -34,28 +34,34 @@
 </AuthorizeView>
 
 @code {
+
     User user;
     private string errorMessage;
-    private string username;
-    private string password;
+    private static string username;
+    private static string password;
 
 
-    public async Task PerformLogin()
+    static async Task PerformLogin()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost8080/sep3/login/user");
-
-        var client = _clientFactory.CreateClient();
-
-        HttpResponseMessage response = await client.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        HttpClient client = new HttpClient();
+        try
         {
-            user = await response.Content.ReadFromJsonAsync<User>();
-            NavigationManager.NavigateTo("/");
+            var value = new Dictionary<string, string>
+           {
+                    { "username", username},
+                    { "password", password}
+           };
+            var content = new FormUrlEncodedContent(value);
+
+            HttpResponseMessage response = await client.PostAsync("http://localhost:8080/sep3/login/user", content);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseBody);
         }
-        else
+        catch (HttpRequestException e)
         {
-            errorMessage = $"Incorrect information: { response.ReasonPhrase }";
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
         }
     }
 
