@@ -1,0 +1,42 @@
+﻿@page "/search"
+
+@namespace SearchComponent
+
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager NavigationManager
+
+@using SEP3_FrontEnd.Models
+
+
+
+<div class="search-container">
+    <input type="text" placeholder="Search.." name="search" @bind-value="username" />
+    <div style="color:red">@errorMessage</div>
+    <button type="submit"><i class="fa fa-search" @onclick="SearchUser"></i></button>
+
+
+</div>
+
+@code {
+    User user;
+    private string username;
+    private string errorMessage;
+
+    public async Task SearchUser()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost8080/sep3/getUserByUsername");
+
+        var client = _clientFactory.CreateClient();
+
+        HttpResponseMessage response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            user = await response.Content.ReadFromJsonAsync<User>();
+        }
+        else
+        {
+            errorMessage = $"User was not found";
+        }
+    }
+}

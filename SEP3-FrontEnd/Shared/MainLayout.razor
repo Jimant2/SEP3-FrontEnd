@@ -1,5 +1,7 @@
 ﻿
 @using LoginComponent
+@using SearchComponent
+
 
 @inherits LayoutComponentBase
 
@@ -10,6 +12,10 @@
 </div>
 
 <div class="main">
+
+    <div class="top-row px-2" >
+        <SearchBar />
+    </div>
 
     <div class="top-row px-4">
         <Login />

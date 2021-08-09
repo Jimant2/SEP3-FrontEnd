@@ -38,6 +38,7 @@ namespace SEP3_FrontEnd
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             services.AddSingleton<IChatService, ChatService>();
+            services.AddHttpClient();
 
             services.AddAuthorization(options =>
             {

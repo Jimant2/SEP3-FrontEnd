@@ -8,8 +8,8 @@ namespace SEP3_FrontEnd.Data.Impl
 {
     public class ChatService : IChatService
     {
-        private IList<User> UsersFromRooms;
-        private IList<ChatRoom> ChatRooms;
+        private  IList<User> UsersFromRooms;
+        private  IList<ChatRoom>  ChatRooms;
 
         public ChatService()
         {

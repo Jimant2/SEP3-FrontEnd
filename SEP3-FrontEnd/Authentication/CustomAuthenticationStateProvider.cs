@@ -45,7 +45,7 @@ namespace SEP3_FrontEnd.Authentication
             return await Task.FromResult(new AuthenticationState(cachedClaimsPrincipal));
         }
         public async Task<User> GetUser()
-        {
+        {           
             return cachedUser;
         }
         public void ValidateLogin(string username, string password)

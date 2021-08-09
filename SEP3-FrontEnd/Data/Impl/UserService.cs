@@ -14,7 +14,7 @@ namespace SEP3_FrontEnd.Data.Impl
         private const string uri = "http://localhost:5000/user";
         private readonly HttpClient client;
 
-        JsonSerializerOptions serializeOptions = new JsonSerializerOptions
+        JsonSerializerOptions  serializeOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true

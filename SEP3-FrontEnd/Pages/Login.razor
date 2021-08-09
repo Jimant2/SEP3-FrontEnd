@@ -2,8 +2,10 @@
 
 @namespace LoginComponent
 
+@inject IHttpClientFactory _clientFactory
 
 @using SEP3_FrontEnd.Authentication
+@using SEP3_FrontEnd.Models 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -32,22 +34,28 @@
 </AuthorizeView>
 
 @code {
+    User user;
+    private string errorMessage;
     private string username;
     private string password;
-    private string errorMessage;
+
 
     public async Task PerformLogin()
     {
-        errorMessage = "";
-        try
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost8080/sep3/login/user");
+
+        var client = _clientFactory.CreateClient();
+
+        HttpResponseMessage response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
         {
-            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).ValidateLogin(username, password);
-            username = "";
-            password = "";
+            user = await response.Content.ReadFromJsonAsync<User>();
+            NavigationManager.NavigateTo("/");
         }
-        catch (Exception e)
+        else
         {
-            errorMessage = e.Message;
+            errorMessage = $"Incorrect information: { response.ReasonPhrase }";
         }
     }
 
@@ -60,8 +68,11 @@
         {
             ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
             NavigationManager.NavigateTo("/");
+        } catch (Exception e)
+        {
+
         }
-        catch (Exception e) { }
+
     }
 
 }
