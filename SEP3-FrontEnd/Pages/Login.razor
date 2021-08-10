@@ -35,13 +35,13 @@
 
 @code {
 
-    User user;
-    private string errorMessage;
-    private static string username;
-    private static string password;
 
+    private  string errorMessage;
+    private  string username;
+    private  string password;
+    
 
-    static async Task PerformLogin()
+    public async Task PerformLogin()
     {
         HttpClient client = new HttpClient();
         try
@@ -56,6 +56,12 @@
             HttpResponseMessage response = await client.PostAsync("http://localhost:8080/sep3/login/user", content);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
+
+            await ((CustomAuthenticationStateProvider) AuthenticationStateProvider).ValidateLogin(username, password);
+            username = "";
+            password = "";
+
+         
 
 
             Console.WriteLine(responseBody);
@@ -74,7 +80,7 @@
         password = "";
         try
         {
-            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
+            await  ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
             NavigationManager.NavigateTo("/");
         } catch (Exception e)
         {

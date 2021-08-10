@@ -1,11 +1,11 @@
 ﻿@page "/accountmanagement"
 @using SEP3_FrontEnd.Models
-@attribute [Authorize(Policy ="SecurityLevel2")]
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<AuthorizeView>
 
-    <h3>Hello @context.User.Identity.Name</h3>
+
+    <h3>Hello</h3>
     <div class="row">
         <div class="col-md-4">
             <form>
@@ -29,7 +29,7 @@
             <label>@result</label>
         </div>
         </div>
-</AuthorizeView>
+
 @code {
     private string username { get; set; }
     private string password { get; set; }
