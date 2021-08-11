@@ -12,8 +12,6 @@ namespace SEP3_FrontEnd.Models
         public string sender;
         public string receiver;
 
-        public Message()
-        {
-        }
+
     }
 }

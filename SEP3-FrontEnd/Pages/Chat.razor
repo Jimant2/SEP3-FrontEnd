@@ -1,62 +1,31 @@
 ﻿@page "/Chat"
 
 @using SEP3_FrontEnd.Models
-@using SEP3_FrontEnd.Authentication
-@using System.Text.Json
+@using Newtonsoft.Json;
+@using System.Text;
+
 
 
 @inject IHttpClientFactory _clientFactory
 
-@inject AuthenticationStateProvider AuthenticationStateProvider
+
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
 <h3>Chat</h3>
-<div style="border:0px;height:90vh;">
-    <div class="panel panel-primary" style="height: 85%;">
-        <div class="panel-heading top-bar">
-            <div class="col-md-8 col-xs-8">
-                <h3 class="panel-title">
-
-                    @if (user != null)
-                    {
-                        <b>@user.Username</b>
-                    }
-
-                </h3>
-            </div>
-        </div>
-        <div id="divMessageContainerBase" class="panel-body msg_container_base">
-            @if (Messages != null && Messages.Count() > 0)
-            {
-                @foreach (var message in Messages)
-                {
-                    @if (message.sender == sender)
-                    {
-                        <div class="row msg_container base_sent">
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages msg_sent">
-                                    <p>@message.body</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="row msg_container base_receive">
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages msg_receive">
-                                    <p>@message.body</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
-            }
-        </div>
-        <!--CHAT USER BOX-->
+        
         <div class="panel-footer">
             <div class="input-group" id="myForm">
+                <div class="form-group">
+                    <label class="control-label">Sender</label>
+                    <br />
+                    <input placeholder="Sender" @bind="sender" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Receiver</label>
+                    <br />
+                    <input placeholder="Receiver" @bind="receiver" />
+                </div>
                 <input id="txtMessageInput"
                        @bind="body"
                        type="text"
@@ -65,84 +34,69 @@
                 <button type="submit" @onclick="SendMessage"><i class="">send</i></button>
             </div>
         </div>
-    </div>
-</div>
+   
 
 @code {
-        private string message;
-        private string username;
-        //IList<ChatRoom> chatRooms = null;
-        User user;
-        public string sender;
-        public string body;
-        public List<Message> Messages { get; set; } = new List<Message>();
-        //   ChatRoom currentRoom;
+
+    public string sender;
+    public string receiver;
+    public string body;
+    public List<Message> Messages { get; set; } = new List<Message>();
 
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        HttpClient client = new HttpClient();
+
+        try
         {
-            HttpClient client = new HttpClient();
+            string uri = "http://localhost:8080/sep3/getMessageBySenderName?sender=" + sender;
+            HttpResponseMessage response = await client.GetAsync(uri);
+            string responseBody = await response.Content.ReadAsStringAsync();
 
-            try
-            {
-                string uri = "http://localhost:8080/sep3/getMessageBySenderName?sender=" + sender;
-                HttpResponseMessage response = await client.GetAsync(uri);
-                string responseBody = await response.Content.ReadAsStringAsync();
+            
 
-
-
-                Console.WriteLine(responseBody);
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-            }
+            Console.WriteLine(responseBody);
         }
-    
-
-    public async Task ClearChat()
-    {
-        await JSRuntime.InvokeVoidAsync("ClearChatJS");
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
+        }
     }
-
-
-
-
-    public async Task ConnectToRoom(string roomId)
-    {
-        await ClearChat();
-        await JSRuntime.InvokeVoidAsync("ConnectToRoomJS", roomId);
-
-    }
-
-    public async Task CloseChatRoom()
-    {
-        await JSRuntime.InvokeVoidAsync("CloseChatRoomJS");
-        await ClearChat();
-
-    }
-
-    public async Task ExitRoom()
-    {
-        await JSRuntime.InvokeVoidAsync("ExitRoomJS");
-
-    }
-
-
-
-
-
 
     private async Task SendMessage()
     {
 
-        await JSRuntime.InvokeVoidAsync("SendMessageJS", message);
-        message = "";
+        HttpClient client = new HttpClient();
+        try
+        {
+            var value = new Dictionary<string, string>
+   {
+                    { "sender", sender},
+                    { "receiver", receiver},
+                    {"body", body }
+           };
+            var content = new FormUrlEncodedContent(value);
+
+            var json = JsonConvert.SerializeObject(value);
+
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var url = "http://localhost:8080/sep3/postMessage";
+
+            HttpResponseMessage response = await client.PostAsync(url, data);
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(responseBody);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
+        }
 
     }
-
-
-
 
 }

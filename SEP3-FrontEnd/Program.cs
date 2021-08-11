@@ -7,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using SEP3_FrontEnd.Sockets;
 
 namespace SEP3_FrontEnd
 {
@@ -16,6 +19,9 @@ namespace SEP3_FrontEnd
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+
+            ClientSockets clientSockets = new ClientSockets();
+            clientSockets.Communicate();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
