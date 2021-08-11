@@ -5,65 +5,101 @@
 @using System.Text.Json
 
 
+@inject IHttpClientFactory _clientFactory
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
 <h3>Chat</h3>
-<div class="chatPage">
+<div style="border:0px;height:90vh;">
+    <div class="panel panel-primary" style="height: 85%;">
+        <div class="panel-heading top-bar">
+            <div class="col-md-8 col-xs-8">
+                <h3 class="panel-title">
 
-    <div class="Messages">
-        <ul class="list-group" id="messagesList">
-            @if (messages != null)
+                    @if (user != null)
+                    {
+                        <b>@user.Username</b>
+                    }
+
+                </h3>
+            </div>
+        </div>
+        <div id="divMessageContainerBase" class="panel-body msg_container_base">
+            @if (Messages != null && Messages.Count() > 0)
             {
-                <li>Messages:</li>
-                foreach (var item in messages)
+                @foreach (var message in Messages)
                 {
-                    <li class="list-group-item">@item.sender said @item.body</li>
+                    @if (message.sender == sender)
+                    {
+                        <div class="row msg_container base_sent">
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages msg_sent">
+                                    <p>@message.body</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row msg_container base_receive">
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages msg_receive">
+                                    <p>@message.body</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 }
             }
-        </ul>
-    </div>
-    <div class="commonControls">
-       
-            <button type="button" class="btn btn-primary""">Connect</button>
-        
-    </div>
-
-    <div class="inputField">
-      
-            <textarea class="textarea is-primary" aria-label="Message" @bind="message"></textarea>
-        
-    </div>
-    <div class="sendMessage">
-       
-            <button type="button" class="btn btn-primary" @onclick="async () => await SendMessage()"> Send
-            </button>
-        
-    </div>
-    <div class="disconnect">
-       
-            <button type="button" class="btn btn-primary" ="">
-                Disconnect
-            </button>
-        
+        </div>
+        <!--CHAT USER BOX-->
+        <div class="panel-footer">
+            <div class="input-group" id="myForm">
+                <input id="txtMessageInput"
+                       @bind="body"
+                       type="text"
+                       class="form-control input-sm chat_input"
+                       placeholder="Write your message here..." />
+                <button type="submit" @onclick="SendMessage"><i class="">send</i></button>
+            </div>
+        </div>
     </div>
 </div>
+
 @code {
-    private string message;
-    IList<Message> messages = null;
-    IList<ChatRoom> chatRooms = null;
-    User chatUser;
-    ChatRoom currentRoom;
+        private string message;
+        private string username;
+        //IList<ChatRoom> chatRooms = null;
+        User user;
+        public string sender;
+        public string body;
+        public List<Message> Messages { get; set; } = new List<Message>();
+        //   ChatRoom currentRoom;
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        chatUser = await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).GetUser();
-        await JSRuntime.InvokeVoidAsync("EstablishConnection");
-        StateHasChanged();
-    }
+        protected override async Task OnInitializedAsync()
+        {
+            HttpClient client = new HttpClient();
+
+            try
+            {
+                string uri = "http://localhost:8080/sep3/getMessageBySenderName?sender=" + sender;
+                HttpResponseMessage response = await client.GetAsync(uri);
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+
+
+                Console.WriteLine(responseBody);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+            }
+        }
+    
 
     public async Task ClearChat()
     {
@@ -77,7 +113,7 @@
     {
         await ClearChat();
         await JSRuntime.InvokeVoidAsync("ConnectToRoomJS", roomId);
-      
+
     }
 
     public async Task CloseChatRoom()
@@ -90,18 +126,18 @@
     public async Task ExitRoom()
     {
         await JSRuntime.InvokeVoidAsync("ExitRoomJS");
-       
+
     }
 
 
-    
-  
 
-   
+
+
+
     private async Task SendMessage()
     {
 
-        await JSRuntime.InvokeVoidAsync("SendMessageJS", message);       
+        await JSRuntime.InvokeVoidAsync("SendMessageJS", message);
         message = "";
 
     }
