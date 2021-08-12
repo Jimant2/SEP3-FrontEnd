@@ -26,12 +26,14 @@
                     <br />
                     <input placeholder="Receiver" @bind="receiver" />
                 </div>
-                <input id="txtMessageInput"
-                       @bind="body"
-                       type="text"
-                       class="form-control input-sm chat_input"
-                       placeholder="Write your message here..." />
-                <button type="submit" @onclick="SendMessage"><i class="">send</i></button>
+                <div class="form-group">
+                    <input id="txtMessageInput"
+                           @bind="body"
+                           type="text"
+                           class="form-control input-sm chat_input"
+                           placeholder="Write your message here..." />
+                    <button type="submit" @onclick="SendMessage"><i class="">send</i></button>
+                </div>
             </div>
         </div>
    
@@ -42,6 +44,7 @@
     public string receiver;
     public string body;
     public List<Message> Messages { get; set; } = new List<Message>();
+    Message message;
 
 
     protected override async Task OnInitializedAsync()
@@ -52,9 +55,12 @@
         {
             string uri = "http://localhost:8080/sep3/getMessageBySenderName?sender=" + sender;
             HttpResponseMessage response = await client.GetAsync(uri);
+
+
+
             string responseBody = await response.Content.ReadAsStringAsync();
 
-            
+
 
             Console.WriteLine(responseBody);
         }
